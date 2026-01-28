@@ -1,0 +1,10 @@
+node_modules
+dist
+data
+.git
+.cursor
+.idea
+.vscode
+npm-debug.log
+*.local
+
