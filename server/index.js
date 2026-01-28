@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { initDb } from './db.js';
 
 const app = express();
-const port = process.env.PORT || 5174;
+const port = process.env.PORT || 80;
 const adminPassword = process.env.ADMIN_PASSWORD;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

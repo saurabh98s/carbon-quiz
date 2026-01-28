@@ -13,6 +13,6 @@ RUN npm ci --omit=dev
 COPY server ./server
 COPY --from=build /app/dist ./dist
 RUN mkdir -p data
-EXPOSE 5174
+EXPOSE 80
 CMD ["node", "server/index.js"]
 
