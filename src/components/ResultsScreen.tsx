@@ -389,7 +389,7 @@ const ResultsScreen = ({ result, userInfo, answers, onRestart }: ResultsScreenPr
             Ready to take the next step in your sustainability journey?
           </p>
           <p className="text-gray-500 text-xs mt-2">
-            Contact C9 Central for personalized decarbonization solutions
+            Contact <a href="mailto:admin@c9central.com" className="text-green-400">admin@c9central.com</a> for personalized decarbonization solutions
           </p>
         </motion.div>
       </motion.div>

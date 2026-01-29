@@ -29,7 +29,14 @@ const QuizScreen = ({ question, questionNumber, progress, onAnswer, celebrate = 
   const flagPath = "M176 18 L232 40 L176 62 Z";
   const flagWavePath = "M176 18 L226 42 L176 62 Z";
   const flagWavePath2 = "M176 18 L236 38 L176 62 Z";
-  const handleContinue = () => { if (selected) onAnswer(selected); };
+
+  const handleAnswerClick = (score: number) => {
+    setSelected(score);
+    // Auto-advance after a brief visual feedback delay
+    setTimeout(() => {
+      onAnswer(score);
+    }, 350);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 randstad-screen">
@@ -71,14 +78,9 @@ const QuizScreen = ({ question, questionNumber, progress, onAnswer, celebrate = 
                 transition={{ duration: 0.4, boxShadow: { duration: 0.9 } }}
               />
             </div>
+            {/* Progress indicator only - auto-advance on answer click */}
             <div className="randstad-cta">
-              <button
-                className={`rs-btn ${selected ? 'rs-btn-active' : 'rs-btn-disabled'}`}
-                onClick={handleContinue}
-                disabled={!selected}
-              >
-                continue
-              </button>
+              <span className="text-sm text-gray-400">{questionNumber} of 45</span>
             </div>
           </div>
         </div>
@@ -114,7 +116,7 @@ const QuizScreen = ({ question, questionNumber, progress, onAnswer, celebrate = 
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ delay: 0.05 * idx, duration: 0.25 }}
                   className={`answer ${selected === score ? 'answer-active' : ''}`}
-                  onClick={() => setSelected(score)}
+                  onClick={() => handleAnswerClick(score)}
                 >
                   {score === 5 && 'Always or almost always'}
                   {score === 4 && 'Often'}

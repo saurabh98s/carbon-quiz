@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QUIZ_QUESTIONS } from './data/quizData';
@@ -14,6 +14,39 @@ import './App.css';
 
 type AppState = 'welcome' | 'quiz' | 'loading' | 'results';
 
+const STORAGE_KEY = 'c9_quiz_progress';
+
+interface SavedProgress {
+  userInfo: UserInfo;
+  currentQuestionIndex: number;
+  answers: { questionId: number; score: number; timestamp: string }[];
+  savedAt: string;
+}
+
+const saveProgress = (userInfo: UserInfo, questionIndex: number, answers: QuizAnswer[]) => {
+  const data: SavedProgress = {
+    userInfo,
+    currentQuestionIndex: questionIndex,
+    answers: answers.map(a => ({ ...a, timestamp: a.timestamp.toISOString() })),
+    savedAt: new Date().toISOString()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
+const loadProgress = (): SavedProgress | null => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+
+const clearProgress = () => {
+  localStorage.removeItem(STORAGE_KEY);
+};
+
 function QuizFlow() {
   const [currentState, setCurrentState] = useState<AppState>('welcome');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -23,6 +56,15 @@ function QuizFlow() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [sectionDialog, setSectionDialog] = useState<{ open: boolean; sectionName: string; percentage: number; message: string } | null>(null);
   const [pendingAdvanceIndex, setPendingAdvanceIndex] = useState<number | null>(null);
+  const [resumePrompt, setResumePrompt] = useState<SavedProgress | null>(null);
+
+  // Check for saved progress on mount
+  useEffect(() => {
+    const saved = loadProgress();
+    if (saved && saved.answers.length > 0 && saved.currentQuestionIndex < QUIZ_QUESTIONS.length) {
+      setResumePrompt(saved);
+    }
+  }, []);
 
   const currentQuestion = QUIZ_QUESTIONS[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100;
@@ -43,6 +85,20 @@ function QuizFlow() {
     setQuizResult(null);
   };
 
+  const handleResume = () => {
+    if (!resumePrompt) return;
+    setUserInfo(resumePrompt.userInfo);
+    setAnswers(resumePrompt.answers.map(a => ({ ...a, timestamp: new Date(a.timestamp) })));
+    setCurrentQuestionIndex(resumePrompt.currentQuestionIndex);
+    setCurrentState('quiz');
+    setResumePrompt(null);
+  };
+
+  const handleStartFresh = () => {
+    clearProgress();
+    setResumePrompt(null);
+  };
+
   const handleAnswer = (score: number) => {
     const answer: QuizAnswer = {
       questionId: currentQuestion.id,
@@ -52,6 +108,11 @@ function QuizFlow() {
 
     const newAnswers = [...answers, answer];
     setAnswers(newAnswers);
+
+    // Save progress to localStorage
+    if (userInfo) {
+      saveProgress(userInfo, currentQuestionIndex + 1, newAnswers);
+    }
 
     if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
       const currentSection = currentQuestion.section.id;
@@ -83,6 +144,7 @@ function QuizFlow() {
         const result = calculateQuizResult(newAnswers);
         setQuizResult(result);
         setCurrentState('results');
+        clearProgress(); // Clear saved progress on completion
       }, 2000);
     }
   };
@@ -104,6 +166,7 @@ function QuizFlow() {
   };
 
   const handleRestart = () => {
+    clearProgress();
     setCurrentState('welcome');
     setCurrentQuestionIndex(0);
     setAnswers([]);
@@ -201,6 +264,25 @@ function QuizFlow() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Resume prompt modal */}
+      {resumePrompt && currentState === 'welcome' && (
+        <div className="rs-modal-backdrop">
+          <div className="rs-modal">
+            <div className="rs-modal-header">
+              <span className="rs-modal-badge">Resume</span>
+              <span className="rs-modal-title">Continue your quiz?</span>
+            </div>
+            <p className="rs-modal-message">
+              Welcome back, {resumePrompt.userInfo.name}! You completed {resumePrompt.answers.length} of {QUIZ_QUESTIONS.length} questions.
+            </p>
+            <div className="rs-modal-actions" style={{ gap: '0.75rem' }}>
+              <button className="rs-btn" style={{ background: 'rgba(255,255,255,.08)', color: '#fff', border: '1px solid rgba(255,255,255,.2)' }} onClick={handleStartFresh}>Start Fresh</button>
+              <button className="rs-btn rs-btn-active" onClick={handleResume}>Continue</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         {currentState === 'welcome' && (
           <WelcomeScreen key="welcome" onStart={handleStartQuiz} />

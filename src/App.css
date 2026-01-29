@@ -90,11 +90,9 @@
 }
 
 /* Full-width results container */
-.results-wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding-top: 0; }
-.results-header { margin-top: -130vh; }
-@media (max-width: 1400px) { .results-header { margin-top: -56vh; } }
-@media (max-width: 1024px) { .results-header { margin-top: -40vh; } }
-@media (max-width: 640px) { .results-header { margin-top: -26vh; } }
+.results-wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding-top: 4rem; padding-left: 1rem; padding-right: 1rem; }
+.results-header { margin-top: 0; }
+@media (max-width: 640px) { .results-wrap { padding-top: 2rem; } }
 .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 1rem; padding: 1rem; }
 .metric-title { color: var(--text-muted); font-size: .85rem; }
@@ -381,6 +379,48 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+
+  .result-card {
+    padding: 1rem;
+  }
+
+  .metric-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    padding: 0.75rem;
+  }
+
+  .metric-value {
+    font-size: 1.4rem;
+  }
+
+  .tier-badge {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .recommendations-list li {
+    padding: 0.75rem;
+    padding-left: 2.5rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .rs-slider-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .rs-slider-nav h3 {
+    font-size: 1.25rem;
+  }
 }
 
 /* ——— Randstad-styled quiz screen ——— */
@@ -416,11 +456,35 @@
 .mountain-svg { width: 100%; max-width: 420px; height: auto; }
 
 .answers { display: flex; flex-direction: column; gap: 0.75rem; }
-.answer { text-align: left; background: rgba(255,255,255,.08); color: #fff; border: 2px solid rgba(255,255,255,.2); border-radius: 14px; padding: 1rem 1.2rem; font-size: 1.05rem; transition: background .15s ease, border-color .15s ease, transform .15s ease; width: 520px; }
+.answer { text-align: left; background: rgba(255,255,255,.08); color: #fff; border: 2px solid rgba(255,255,255,.2); border-radius: 14px; padding: 1rem 1.2rem; font-size: 1.05rem; transition: background .15s ease, border-color .15s ease, transform .15s ease; width: 520px; max-width: 100%; cursor: pointer; }
 .answer:hover { background: rgba(255,255,255,.14); border-color: #fff; transform: translateX(2px); }
 .answer-active { background: #fff; color: #1a1a1a; border-color: #fff; transform: translateX(4px); }
 
 @media (max-width: 900px) { .randstad-body { grid-template-columns: 1fr; } }
+
+/* ——— Mobile quiz responsiveness ——— */
+@media (max-width: 900px) {
+  .grid-quiz { grid-template-columns: 1fr; gap: 1rem; padding: 0 1rem; }
+  .section-sidebar { display: none; }
+  .center-col { grid-column: 1; }
+  .randstad-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .randstad-step { flex-wrap: wrap; }
+  .randstad-step-num { font-size: 2rem; }
+  .randstad-title { font-size: 1.1rem; }
+  .randstad-progress { width: 100%; }
+  .progress-rail { width: 100%; flex: 1; }
+  .mountain-wrap { display: none; }
+  .answer { width: 100%; font-size: 0.95rem; padding: 0.9rem 1rem; }
+}
+
+@media (max-width: 640px) {
+  .randstad-container.center { min-height: auto; padding: 1.5rem 0; }
+  .randstad-step-num { font-size: 1.75rem; }
+  .randstad-title { font-size: 1rem; }
+  .randstad-motivation { font-size: 0.85rem; }
+  .answer { font-size: 0.9rem; padding: 0.75rem 0.9rem; border-radius: 10px; }
+  .answers { gap: 0.5rem; }
+}
 
 /* Progress bar */
 .progress-rail { width: 240px; height: 8px; background: rgba(255,255,255,.15); border-radius: 9999px; overflow: hidden; }
@@ -439,10 +503,10 @@
 .sidebar-progress-meta { color: #8fb7a6; font-size: .85rem; margin-top: .35rem; }
 
 /* ——— Randstad welcome ——— */
-.welcome-wrap { background: linear-gradient(180deg, #103026, #0c241d); display: block; min-height: 100vh; position: relative; overflow: hidden; }
+.welcome-wrap { background: linear-gradient(180deg, #103026, #0c241d); display: block; height: 100vh; position: relative; overflow: hidden; }
 .welcome-bg { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
 .welcome-bg-svg { width: 100%; height: 100%; display: block; }
-.welcome-hero { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.welcome-hero { width: 100%; min-height: 100vh; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; box-sizing: border-box; overflow: hidden; }
 .welcome-inner { width: 100%; max-width: 1080px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 2rem; position: relative; z-index: 1; }
 .welcome-inner.welcome-xl { max-width: 1280px; }
 .welcome-left { color: #fff; }
@@ -453,9 +517,45 @@
 .welcome-right { display: flex; align-items: center; justify-content: center; }
 .welcome-illustration { width: 100%; height: auto; max-width: 520px; }
 .welcome-illustration.big { max-width: 620px; }
-.landing-section { min-height: 100vh; }
-.form-section { min-height: 100vh; }
+.landing-section { min-height: 100vh; height: 100vh; }
+.form-section { min-height: 100vh; height: auto; overflow-y: auto; }
 .welcome-stack { height: 200vh; position: relative; z-index: 1; }
+
+@media (max-width: 900px) {
+  .form-section .welcome-right { display: none; }
+  .form-section .welcome-inner { grid-template-columns: 1fr; max-width: 540px; }
+  .form-section .welcome-left { text-align: left; }
+}
+
+@media (max-width: 640px) {
+  .landing-section { height: 100vh; min-height: 100vh; }
+  .form-section { height: 100vh; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 1.5rem 1rem; box-sizing: border-box; overflow-y: auto; }
+  .form-section .welcome-inner { padding: 0; width: 100%; }
+  .form-section .welcome-left { width: 100%; }
+  .form-section .welcome-title.lg { font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .form-section .welcome-sub { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .form-section .welcome-badge { font-size: 0.65rem; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
+  .rs-intake-card { padding: 0.6rem; margin-top: 0.5rem; }
+  .rs-grid-2 { gap: 0.4rem 0.6rem; grid-template-columns: 1fr; }
+  .rs-label { font-size: 0.75rem; margin-bottom: 0.1rem; }
+  .rs-input { padding: 0.5rem 0.6rem; font-size: 0.85rem; border-radius: 8px; }
+  .rs-intake-actions { margin-top: 0.6rem; }
+  .rs-btn { padding: 0.6rem 1rem; font-size: 0.9rem; width: 100%; }
+}
+
+/* Extra small screens (iPhone SE, etc.) */
+@media (max-height: 700px) and (max-width: 640px) {
+  .form-section { padding: 1rem 0.75rem; align-items: center; }
+  .form-section .welcome-title.lg { font-size: 1.2rem; }
+  .form-section .welcome-sub { font-size: 0.8rem; margin-bottom: 0.3rem; }
+  .form-section .welcome-badge { display: none; }
+  .rs-intake-card { padding: 0.5rem; margin-top: 0.3rem; }
+  .rs-grid-2 { gap: 0.3rem 0.5rem; }
+  .rs-label { font-size: 0.7rem; }
+  .rs-input { padding: 0.45rem 0.5rem; font-size: 0.8rem; }
+  .rs-intake-actions { margin-top: 0.4rem; }
+  .rs-btn { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
+}
 .welcome-arrow-wrap { margin-top: 1.5rem; }
 .welcome-arrow { display: inline-flex; align-items: center; gap: .75rem; background: rgba(0,179,107,.2); color: #fff; border: 1px solid rgba(0,179,107,.35); padding: .75rem 1.2rem; border-radius: 9999px; cursor: pointer; font-weight: 600; transition: transform .15s ease, background .15s ease; }
 .welcome-arrow:hover { background: rgba(0,179,107,.32); transform: translateY(-2px); }
@@ -470,7 +570,22 @@
 .eco-drop { right: 0; bottom: 40px; }
 .eco-recycle { right: 220px; bottom: 0; }
 
-@media (max-width: 900px) { .welcome-inner { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .welcome-inner { grid-template-columns: 1fr; text-align: center; } .welcome-right { order: -1; } .landing-logo { width: min(200px, 50vw); } }
+@media (max-width: 640px) { 
+  .welcome-hero { padding: 1rem; height: 100vh; box-sizing: border-box; } 
+  .welcome-title.lg { font-size: 1.75rem; } 
+  .welcome-sub { font-size: 0.9rem; } 
+  .landing-logo { width: min(140px, 40vw); }
+  .landing-logo-wrap { padding: 0.25rem; }
+  .welcome-arrow { padding: 0.6rem 1rem; font-size: 0.9rem; }
+  .landing-section .welcome-inner { gap: 1rem; }
+}
+
+@media (max-height: 700px) and (max-width: 640px) {
+  .landing-section .welcome-title.lg { font-size: 1.5rem; }
+  .landing-section .welcome-sub { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .landing-logo { width: min(100px, 30vw); }
+}
 
 /* ——— Section complete modal ——— */
 .rs-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: grid; place-items: center; z-index: 50; }
